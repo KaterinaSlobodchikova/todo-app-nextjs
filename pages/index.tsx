@@ -1,8 +1,20 @@
 import Head from "next/head";
-import Image from "next/image";
+import { useState } from "react";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
+  const [todo, setTodo] = useState<string>("");
+  const [todos, setTodos] = useState<string[]>([]);
+
+  const addTodo = (e: any) => {
+    if (todo !== "") {
+      if (e.key === "Enter") {
+        setTodos([...todos, todo]);
+        setTodo("");
+      }
+    }
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -13,7 +25,32 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1>todos</h1>
-        <input className={styles.input} placeholder="What needs to be done?" />
+        <input
+          type="text"
+          name="todo"
+          value={todo}
+          className={styles.input}
+          placeholder="What needs to be done?"
+          onChange={(event) => {
+            setTodo(event.target.value);
+          }}
+          onKeyDown={addTodo}
+        />
+        <ul className={styles.todoContainer}>
+          {todos.map((todo, index) => (
+            <li className={styles.todoWrapper} key={index}>
+              {todo}
+            </li>
+          ))}
+          <div className={styles.filtersContainer}>
+            <span className={styles.todoCount}>2 items left</span>
+            <ul className={styles.filters}>
+              <a>All</a>
+              <a>Active</a>
+              <a>Completed</a>
+            </ul>
+          </div>
+        </ul>
       </main>
 
       <footer className={styles.footer}>

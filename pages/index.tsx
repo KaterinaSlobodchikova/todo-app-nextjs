@@ -4,15 +4,52 @@ import styles from "../styles/Home.module.css";
 
 export default function Home() {
   const [todo, setTodo] = useState<string>("");
-  const [todos, setTodos] = useState<string[]>([]);
+  const [todos, setTodos] = useState<any[]>([]);
+  const [completedTodoCount, setCompletedTodoCount] = useState(0);
+  const [checked, setChecked] = useState(false);
 
   const addTodo = (e: any) => {
     if (todo !== "") {
       if (e.key === "Enter") {
-        setTodos([...todos, todo]);
+        const id = todos.length + 1;
+        setTodos((prev) => [
+          ...prev,
+          {
+            id: id,
+            task: todo,
+            complete: false,
+          },
+        ]);
         setTodo("");
       }
     }
+  };
+
+  const handleChange = () => {
+    setChecked(!checked);
+  };
+
+  const handleComplete = (id: number) => {
+    let list = todos.map((task) => {
+      let item = {};
+      if (task.id == id) {
+        if (!task.complete) {
+          setCompletedTodoCount(completedTodoCount + 1);
+        } else {
+          setCompletedTodoCount(completedTodoCount - 1);
+        }
+        item = { ...task, complete: !task.complete };
+      } else item = { ...task };
+      return item;
+    });
+    setTodos(list);
+  };
+
+  const deleteTodo = (text: string) => {
+    const newTodos = todos.filter((todo) => {
+      return todo !== text;
+    });
+    setTodos(newTodos);
   };
 
   return (
@@ -36,30 +73,52 @@ export default function Home() {
           }}
           onKeyDown={addTodo}
         />
-        <div className={styles.toggleAllContainer}>
-          <input className={styles.toggleAll}></input>
-          <label></label>
-        </div>
-
         <ul className={styles.todoContainer}>
-          {todos.map((todo, index) => (
-            <div key={index} className={styles.toggleWrapper}>
-              <input className={styles.toggle} type="checkbox" ></input>
-              <li className={styles.todoWrapper} key={index}>
-                {todo}
-              </li>
-            </div>
-          ))}
+          {todos.map((todo) => {
+            return (
+              <div key={todo.id} className={styles.toggleWrapper}>
+                <input
+                  className={styles.toggle}
+                  type="checkbox"
+                  onClick={() => handleChange}
+                ></input>
+                <li
+                  className={styles.todoWrapper}
+                  key={todo.id}
+                  onClick={() => handleComplete(todo.id)}
+                  style={{
+                    listStyle: "none",
+                    textDecoration: todo.complete && "line-through",
+                  }}
+                >
+                  {todo.task}
+                </li>
+
+                <button
+                  className={styles.deleteBtn}
+                  onClick={() => {
+                    deleteTodo(todo);
+                  }}
+                >
+                  x
+                </button>
+              </div>
+            );
+          })}
           {todos.length > 0 ? (
             <div className={styles.filtersContainer}>
               <span className={styles.todoCount}>
-                {todos.length} items left
+                {todos.length - completedTodoCount} items left
               </span>
               <ul className={styles.filters}>
                 <a className="filter">All</a>
                 <a>Active</a>
                 <a>Completed</a>
               </ul>
+
+              <button className={styles.btnClear} onClick={() => {}}>
+                Clear completed
+              </button>
             </div>
           ) : null}
         </ul>

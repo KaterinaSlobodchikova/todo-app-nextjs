@@ -36,20 +36,32 @@ export default function Home() {
           }}
           onKeyDown={addTodo}
         />
+        <div className={styles.toggleAllContainer}>
+          <input className={styles.toggleAll}></input>
+          <label></label>
+        </div>
+
         <ul className={styles.todoContainer}>
           {todos.map((todo, index) => (
-            <li className={styles.todoWrapper} key={index}>
-              {todo}
-            </li>
+            <div key={index} className={styles.toggleWrapper}>
+              <input className={styles.toggle} type="checkbox" ></input>
+              <li className={styles.todoWrapper} key={index}>
+                {todo}
+              </li>
+            </div>
           ))}
-          <div className={styles.filtersContainer}>
-            <span className={styles.todoCount}>2 items left</span>
-            <ul className={styles.filters}>
-              <a>All</a>
-              <a>Active</a>
-              <a>Completed</a>
-            </ul>
-          </div>
+          {todos.length > 0 ? (
+            <div className={styles.filtersContainer}>
+              <span className={styles.todoCount}>
+                {todos.length} items left
+              </span>
+              <ul className={styles.filters}>
+                <a className="filter">All</a>
+                <a>Active</a>
+                <a>Completed</a>
+              </ul>
+            </div>
+          ) : null}
         </ul>
       </main>
 

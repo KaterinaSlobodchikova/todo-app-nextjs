@@ -91,18 +91,27 @@ export default function Home() {
           {todos.map((todo) => {
             return (
               <div key={todo.id} className={styles.toggleWrapper}>
-                <input
-                  className={styles.toggle}
-                  type="checkbox"
-                  onClick={() => handleChange}
-                ></input>
+                <label className={styles.checkboxContainer}>
+                  <input
+                    className={styles.toggle}
+                    type="checkbox"
+                    onClick={() => handleChange}
+                  ></input>
+                  <span
+                    className={styles.checkmark}
+                    onClick={() => handleComplete(todo.id)}
+                    style={{
+                      textDecoration: todo.complete && "line-through",
+                    }}
+                  ></span>
+                </label>
+
                 <li
                   className={styles.todoWrapper}
                   key={todo.id}
-                  onClick={() => handleComplete(todo.id)}
                   style={{
-                    listStyle: "none",
                     textDecoration: todo.complete && "line-through",
+                    color: todo.complete && "#d9d9d9",
                   }}
                 >
                   {todo.task}
@@ -121,7 +130,8 @@ export default function Home() {
           })}
           {todos.length > 0 ? (
             <div className={styles.filtersContainer}>
-              <span className={styles.todoCount}>
+              <div className={styles.infoContainer}>
+                <span className={styles.todoCount}>
                 {todos.length - completedTodoCount} items left
               </span>
               <ul className={styles.filters}>
@@ -129,11 +139,14 @@ export default function Home() {
                 <a>Active</a>
                 <a>Completed</a>
               </ul>
-
-              <button className={styles.btnClear} onClick={getCompleted}>
+              </div>
+              <div>
+                {completedTodoCount ? (<button className={styles.btnClear} onClick={getCompleted}>
                 Clear completed
-              </button>
-            </div>
+              </button>) : null}
+              </div>
+              
+              </div>
           ) : null}
         </ul>
       </main>

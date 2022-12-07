@@ -52,6 +52,20 @@ export default function Home() {
     setTodos(newTodos);
   };
 
+  const getCompleted = () => {
+    let filtered = todos.filter((task) => {
+      return !task.complete;
+    });
+    setTodos(filtered);
+  };
+
+  const getActive = () => {
+    let filtered = todos.filter((task) => {
+      return task.complete == true;
+    });
+    setTodos(filtered);
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -116,7 +130,7 @@ export default function Home() {
                 <a>Completed</a>
               </ul>
 
-              <button className={styles.btnClear} onClick={() => {}}>
+              <button className={styles.btnClear} onClick={getCompleted}>
                 Clear completed
               </button>
             </div>

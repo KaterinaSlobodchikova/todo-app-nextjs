@@ -31,8 +31,8 @@ export default function Home() {
   };
 
   type FilterMapTypes = {
-    [key: string]: any
-}
+    [key: string]: any;
+  };
 
   const FILTER_MAP: FilterMapTypes = {
     All: () => true,
@@ -102,6 +102,8 @@ export default function Home() {
     setEditing(null);
     setEditingText("");
   };
+
+  const count = todos.filter((todo) => !todo.complete).length;
 
   return (
     <div className={styles.container}>
@@ -187,9 +189,7 @@ export default function Home() {
           {todos.length > 0 ? (
             <div className={styles.filtersContainer}>
               <div className={styles.infoContainer}>
-                <span className={styles.todoCount}>
-                  {todos.length - completedTodoCount} items left
-                </span>
+                <span className={styles.todoCount}>{count} items left</span>
                 <ul className={styles.filters}>{filterList}</ul>
               </div>
               <div>

@@ -126,6 +126,7 @@ export default function Home() {
           }}
           onKeyDown={addTodo}
         />
+
         <ul className={styles.todoContainer}>
           {todos.filter(FILTER_MAP[filter]).map((todo) => {
             return (

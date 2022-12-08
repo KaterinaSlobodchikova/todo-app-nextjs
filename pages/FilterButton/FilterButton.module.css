@@ -1,0 +1,8 @@
+.visuallyHidden {
+  display: none;
+}
+
+.spanSelected {
+  padding: 1px;
+  border: 1px solid rgba(175, 47, 47, 0.2);
+}

@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useState } from "react";
 import styles from "../styles/Home.module.css";
+import FilterButton from "./FilterButton";
 import Footer from "./Footer";
 
 export default function Home() {
@@ -10,6 +11,7 @@ export default function Home() {
   const [checked, setChecked] = useState(false);
   const [edit, setEditing] = useState(null);
   const [edittext, setEditingText] = useState("");
+  const [filter, setFilter] = useState("All");
 
   const addTodo = (e: any) => {
     if (todo !== "") {
@@ -28,13 +30,27 @@ export default function Home() {
     }
   };
 
-  /*
-  const FILTER_MAP = {
+  type FilterMapTypes = {
+    [key: string]: any
+}
+
+  const FILTER_MAP: FilterMapTypes = {
     All: () => true,
     Active: (todo: any) => !todo.complete,
     Completed: (todo: any) => todo.complete,
   };
-  */
+
+  const filterNames = Object.keys(FILTER_MAP);
+
+  const filterList = filterNames.map((name) => (
+    <FilterButton
+      key={name}
+      name={name}
+      isPressed={name === filter}
+      setFilter={setFilter}
+      onClick={() => {}}
+    />
+  ));
 
   const handleChange = () => {
     setChecked(!checked);
@@ -63,7 +79,7 @@ export default function Home() {
     setTodos(newTodos);
   };
 
-  const getCompleted = () => {
+  const clearCompleted = () => {
     let filtered = todos.filter((task) => {
       return !task.complete;
     });
@@ -109,7 +125,7 @@ export default function Home() {
           onKeyDown={addTodo}
         />
         <ul className={styles.todoContainer}>
-          {todos.map((todo) => {
+          {todos.filter(FILTER_MAP[filter]).map((todo) => {
             return (
               <div key={todo.id} className={styles.toggleWrapper}>
                 <label className={styles.checkboxContainer}>
@@ -174,15 +190,11 @@ export default function Home() {
                 <span className={styles.todoCount}>
                   {todos.length - completedTodoCount} items left
                 </span>
-                <ul className={styles.filters}>
-                  <a className="filter">All</a>
-                  <a>Active</a>
-                  <a>Completed</a>
-                </ul>
+                <ul className={styles.filters}>{filterList}</ul>
               </div>
               <div>
                 {completedTodoCount ? (
-                  <button className={styles.btnClear} onClick={getCompleted}>
+                  <button className={styles.btnClear} onClick={clearCompleted}>
                     Clear completed
                   </button>
                 ) : null}

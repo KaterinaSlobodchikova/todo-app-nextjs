@@ -194,7 +194,7 @@
 .filtersContainer {
   display: flex;
   align-items: center;
-  gap: 100px;
+  gap: 60px;
 }
 
 .infoContainer {
@@ -205,12 +205,11 @@
   font-size: 14px;
   color: #bfbfbf;
   align-items: center;
-  gap: 50px;
+  gap: 90px;
   padding: 10px 15px;
 }
 
 .filters {
-  color: #bfbfbf;
   display: flex;
   list-style-type: none;
   gap: 20px;
@@ -220,6 +219,14 @@
   border: 1px solid transparent;
   border-radius: 3px;
   background: rgb(255 255 255);
+}
+
+.filters button {
+  background: none;
+  border: none;
+  color: #bfbfbf;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 .btnClear {

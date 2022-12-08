@@ -1,12 +1,15 @@
 import Head from "next/head";
 import { useState } from "react";
 import styles from "../styles/Home.module.css";
+import Footer from "./Footer";
 
 export default function Home() {
   const [todo, setTodo] = useState<string>("");
   const [todos, setTodos] = useState<any[]>([]);
   const [completedTodoCount, setCompletedTodoCount] = useState(0);
   const [checked, setChecked] = useState(false);
+  const [edit, setEditing] = useState(null);
+  const [edittext, setEditingText] = useState("");
 
   const addTodo = (e: any) => {
     if (todo !== "") {
@@ -24,6 +27,14 @@ export default function Home() {
       }
     }
   };
+
+  /*
+  const FILTER_MAP = {
+    All: () => true,
+    Active: (todo: any) => !todo.complete,
+    Completed: (todo: any) => todo.complete,
+  };
+  */
 
   const handleChange = () => {
     setChecked(!checked);
@@ -59,11 +70,21 @@ export default function Home() {
     setTodos(filtered);
   };
 
-  const getActive = () => {
-    let filtered = todos.filter((task) => {
-      return task.complete == true;
-    });
-    setTodos(filtered);
+  const EditHandler = (e: any) => {
+    setEditingText(e.target.value);
+  };
+
+  const SubmitEdit = (id: number) => {
+    setTodos(
+      [...todos].map((todo) => {
+        if (todo.id === id) {
+          todo.task = edittext;
+        }
+        return todo;
+      })
+    );
+    setEditing(null);
+    setEditingText("");
   };
 
   return (
@@ -97,25 +118,43 @@ export default function Home() {
                     type="checkbox"
                     onClick={() => handleChange}
                   ></input>
-                  <span
-                    className={styles.checkmark}
-                    onClick={() => handleComplete(todo.id)}
-                    style={{
-                      textDecoration: todo.complete && "line-through",
-                    }}
-                  ></span>
+                  {edit === todo.id ? null : (
+                    <span
+                      className={styles.checkmark}
+                      onClick={() => handleComplete(todo.id)}
+                      style={{
+                        textDecoration: todo.complete && "line-through",
+                      }}
+                    ></span>
+                  )}
                 </label>
 
-                <li
-                  className={styles.todoWrapper}
-                  key={todo.id}
-                  style={{
-                    textDecoration: todo.complete && "line-through",
-                    color: todo.complete && "#d9d9d9",
-                  }}
-                >
-                  {todo.task}
-                </li>
+                {edit === todo.id ? (
+                  <>
+                    <input
+                      type="text"
+                      value={edittext}
+                      onChange={EditHandler}
+                      className={styles.inputEdit}
+                      onBlur={() => SubmitEdit(todo.id)}
+                    />
+                  </>
+                ) : (
+                  <li
+                    className={styles.todoWrapper}
+                    key={todo.id}
+                    style={{
+                      textDecoration: todo.complete && "line-through",
+                      color: todo.complete && "#d9d9d9",
+                    }}
+                    onDoubleClick={() => {
+                      setEditing(todo.id);
+                      setEditingText(todo.task);
+                    }}
+                  >
+                    {todo.task}
+                  </li>
+                )}
 
                 <button
                   className={styles.deleteBtn}
@@ -128,43 +167,33 @@ export default function Home() {
               </div>
             );
           })}
+
           {todos.length > 0 ? (
             <div className={styles.filtersContainer}>
               <div className={styles.infoContainer}>
                 <span className={styles.todoCount}>
-                {todos.length - completedTodoCount} items left
-              </span>
-              <ul className={styles.filters}>
-                <a className="filter">All</a>
-                <a>Active</a>
-                <a>Completed</a>
-              </ul>
+                  {todos.length - completedTodoCount} items left
+                </span>
+                <ul className={styles.filters}>
+                  <a className="filter">All</a>
+                  <a>Active</a>
+                  <a>Completed</a>
+                </ul>
               </div>
               <div>
-                {completedTodoCount ? (<button className={styles.btnClear} onClick={getCompleted}>
-                Clear completed
-              </button>) : null}
+                {completedTodoCount ? (
+                  <button className={styles.btnClear} onClick={getCompleted}>
+                    Clear completed
+                  </button>
+                ) : null}
               </div>
-              
-              </div>
+            </div>
           ) : null}
         </ul>
       </main>
 
-      <footer className={styles.footer}>
-        <p>Double-click to edit a todo</p>
-        <div>
-          <p>
-            Created by{" "}
-            <a href="https://github.com/KaterinaSlobodchikova">katerinasl</a>
-          </p>
-        </div>
-
-        <div>
-          <p>
-            Part of <a href="https://todomvc.com/">TodoMVC</a>{" "}
-          </p>
-        </div>
+      <footer>
+        <Footer />
       </footer>
     </div>
   );
